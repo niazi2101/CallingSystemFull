@@ -103,7 +103,6 @@ public class CallScreenActivity extends BaseActivity {
                 //Creating and starting timer
                 mTimer = new Timer();
                 mDurationTask = new UpdateCallDurationTask();
-                mTimer.schedule(mDurationTask, 0, 500);
 
             }
         } else {
@@ -164,6 +163,7 @@ public class CallScreenActivity extends BaseActivity {
         finish();
     }
 
+
     private String formatTimespan(long timespan) {
         long totalSeconds = timespan / 1000;
         long minutes = totalSeconds / 60;
@@ -215,6 +215,7 @@ public class CallScreenActivity extends BaseActivity {
         }
     }
 
+    //Sinch class for listening to Calls
     private class SinchCallListener implements VideoCallListener {
 
         @Override
@@ -239,6 +240,10 @@ public class CallScreenActivity extends BaseActivity {
             audioController.enableSpeaker();
             mCallStart = System.currentTimeMillis();
             Log.d(TAG, "Call offered video: " + call.getDetails().isVideoOffered());
+
+            mTimer.schedule(mDurationTask, 0, 500);
+
+
         }
 
         @Override
