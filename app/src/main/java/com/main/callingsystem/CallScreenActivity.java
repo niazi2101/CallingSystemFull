@@ -99,6 +99,12 @@ public class CallScreenActivity extends BaseActivity {
             if (!mAddedListener) {
                 call.addCallListener(new SinchCallListener());
                 mAddedListener = true;
+
+                //Creating and starting timer
+                mTimer = new Timer();
+                mDurationTask = new UpdateCallDurationTask();
+                mTimer.schedule(mDurationTask, 0, 500);
+
             }
         } else {
             Log.e(TAG, "Started with invalid callId, aborting.");
@@ -134,9 +140,13 @@ public class CallScreenActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
+
+        //Creating and starting timer
+        /*
         mTimer = new Timer();
         mDurationTask = new UpdateCallDurationTask();
         mTimer.schedule(mDurationTask, 0, 500);
+        */
         updateUI();
     }
 
