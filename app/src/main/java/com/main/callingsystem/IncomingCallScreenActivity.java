@@ -73,6 +73,7 @@ public class IncomingCallScreenActivity extends BaseActivity {
         finish();
     }
 
+
     private class SinchCallListener implements VideoCallListener {
 
         @Override
@@ -103,6 +104,8 @@ public class IncomingCallScreenActivity extends BaseActivity {
             // Display some kind of icon showing it's a video call
         }
     }
+
+
 
     private OnClickListener mClickListener = new OnClickListener() {
         @Override

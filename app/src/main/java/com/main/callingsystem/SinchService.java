@@ -22,9 +22,7 @@ import com.sinch.android.rtc.calling.CallClientListener;
  */
 public class SinchService extends Service {
 
-    //private static final String APP_KEY = "enter-application-key";
-    //private static final String APP_SECRET = "enter-application-secret";
-    //private static final String ENVIRONMENT = "sandbox.sinch.com";
+
     private static final String APP_KEY = "846db418-0ba5-452c-ad10-262cf8d41ad9";
     private static final String APP_SECRET = "ryUz2ph4HU6U9W6PkPv1uQ==";
     private static final String ENVIRONMENT = "sandbox.sinch.com";
@@ -89,6 +87,10 @@ public class SinchService extends Service {
             return mSinchClient.getCallClient().callUserVideo(userId);
         }
 
+        public Call callUserAudio(String userId) {
+            return mSinchClient.getCallClient().callUser(userId);
+        }
+
         public String getUserName() {
             return mUserId;
         }
@@ -110,6 +112,7 @@ public class SinchService extends Service {
         }
 
         public Call getCall(String callId) {
+
             return mSinchClient.getCallClient().getCall(callId);
         }
 

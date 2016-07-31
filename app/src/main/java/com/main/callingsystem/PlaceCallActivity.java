@@ -14,6 +14,7 @@ import android.widget.Toast;
 public class PlaceCallActivity extends BaseActivity {
 
     private Button mCallButton;
+    private Button videoCallButton;
     private EditText mCallName;
 
     @Override
@@ -23,8 +24,13 @@ public class PlaceCallActivity extends BaseActivity {
 
         mCallName = (EditText) findViewById(R.id.callName);
         mCallButton = (Button) findViewById(R.id.callButton);
+        videoCallButton = (Button) findViewById(R.id.buttonVideoCall);
+
+
         mCallButton.setEnabled(false);
+        videoCallButton.setEnabled(false);
         mCallButton.setOnClickListener(buttonClickListener);
+        videoCallButton.setOnClickListener(buttonClickListener);
 
         Button stopButton = (Button) findViewById(R.id.stopButton);
         stopButton.setOnClickListener(buttonClickListener);
@@ -35,6 +41,7 @@ public class PlaceCallActivity extends BaseActivity {
         TextView userName = (TextView) findViewById(R.id.loggedInName);
         userName.setText(getSinchServiceInterface().getUserName());
         mCallButton.setEnabled(true);
+        videoCallButton.setEnabled(true);
     }
 
     @Override
@@ -52,7 +59,25 @@ public class PlaceCallActivity extends BaseActivity {
         finish();
     }
 
+    //method for audio calling
     private void callButtonClicked() {
+        String userName = mCallName.getText().toString();
+        if (userName.isEmpty()) {
+            Toast.makeText(this, "Please enter a user to call", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        //Call call = getSinchServiceInterface().callUserVideo(userName);
+        Call call = getSinchServiceInterface().callUserAudio(userName);
+        String callId = call.getCallId();
+
+        Intent callScreen = new Intent(this, CallScreenActivity.class);
+        callScreen.putExtra(SinchService.CALL_ID, callId);
+        startActivity(callScreen);
+    }
+
+    //method for video calling
+    private void videoCallButtonClicked() {
         String userName = mCallName.getText().toString();
         if (userName.isEmpty()) {
             Toast.makeText(this, "Please enter a user to call", Toast.LENGTH_LONG).show();
@@ -77,6 +102,10 @@ public class PlaceCallActivity extends BaseActivity {
 
                 case R.id.stopButton:
                     stopButtonClicked();
+                    break;
+
+                case R.id.buttonVideoCall:
+                    videoCallButtonClicked();
                     break;
             }
         }
