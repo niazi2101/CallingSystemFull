@@ -7,6 +7,7 @@ import com.sinch.android.rtc.calling.CallEndCause;
 import com.sinch.android.rtc.video.VideoCallListener;
 
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -51,10 +52,15 @@ public class IncomingCallScreenActivity extends BaseActivity {
         }
     }
 
+    //Answer button is clicked
     private void answerClicked() {
         mAudioPlayer.stopRingtone();
         Call call = getSinchServiceInterface().getCall(mCallId);
         if (call != null) {
+            //Allowing user to change volume during call
+            //setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+
+            //
             call.answer();
             Intent intent = new Intent(this, CallScreenActivity.class);
             intent.putExtra(SinchService.CALL_ID, mCallId);

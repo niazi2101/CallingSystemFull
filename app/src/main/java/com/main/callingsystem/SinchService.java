@@ -21,11 +21,27 @@ import com.sinch.android.rtc.calling.CallClientListener;
  * Created by Inbox on 7/25/2016.
  */
 public class SinchService extends Service {
-
-
+/*
+  //Rafi
     private static final String APP_KEY = "846db418-0ba5-452c-ad10-262cf8d41ad9";
     private static final String APP_SECRET = "ryUz2ph4HU6U9W6PkPv1uQ==";
     private static final String ENVIRONMENT = "sandbox.sinch.com";
+
+
+    // Hamza .. https://www.sinch.com/dashboard#/apps .. hamza.khan.niazi04@gmail.com ..
+    // Hamza2101 password
+    private static final String APP_KEY = "990fe562-3d98-4118-8158-167273509301";
+    private static final String APP_SECRET = "cFZKsj52W0KwA3b6NXG7Yx";
+    private static final String ENVIRONMENT = "sandbox.sinch.com";
+*/
+
+    // Hamza .. https://www.sinch.com/dashboard#/apps .. hamza.khan.niazi04@gmail.com ..
+    // pass:Hamza2101 , appName: CallingSystem
+    private static final String APP_KEY = "1f56e7c0-57a4-417d-8b48-a9c1d2591e61";
+    private static final String APP_SECRET = "LKpsjH/MaEqL01dwAWbamg==";
+    private static final String ENVIRONMENT = "sandbox.sinch.com";
+
+
 
     public static final String CALL_ID = "CALL_ID";
     static final String TAG = SinchService.class.getSimpleName();
@@ -82,6 +98,7 @@ public class SinchService extends Service {
         return mSinchServiceInterface;
     }
 
+    //Inner class for calling audio or video
     public class SinchServiceInterface extends Binder {
         public Call callUserVideo(String userId) {
             return mSinchClient.getCallClient().callUserVideo(userId);
@@ -93,6 +110,11 @@ public class SinchService extends Service {
 
         public String getUserName() {
             return mUserId;
+        }
+
+        public String getDetails() {
+            //return mSinchClient.getCallClient().g
+            return "No";
         }
 
         public boolean isStarted() {

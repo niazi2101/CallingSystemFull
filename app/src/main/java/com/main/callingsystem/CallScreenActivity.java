@@ -35,8 +35,7 @@ public class CallScreenActivity extends BaseActivity {
     private UpdateCallDurationTask mDurationTask;
 
     private String mCallId;
-    private long mCallStart = 0;
-    private boolean mAddedListener = false;
+    private long mCallStart = 0;private boolean mAddedListener = false;
     private boolean mVideoViewsAdded = false;
 
     private TextView mCallDuration;
@@ -223,9 +222,21 @@ public class CallScreenActivity extends BaseActivity {
             CallEndCause cause = call.getDetails().getEndCause();
             Log.d(TAG, "Call ended. Reason: " + cause.toString());
             mAudioPlayer.stopProgressTone();
+
+            //change volume control to default
             setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
             String endMsg = "Call ended: " + call.getDetails().toString();
-            Toast.makeText(CallScreenActivity.this, endMsg, Toast.LENGTH_LONG).show();
+            /*
+            String Establishedtime = formatTimespan(call.getDetails()
+                    .getEstablishedTime());
+            */
+            String Establishedtime = formatTimespan(System.currentTimeMillis() - mCallStart);
+
+
+
+            String msg = "Call End Time:"+call.getDetails().getEndedTime();
+            //Toast.makeText(CallScreenActivity.this, endMsg, Toast.LENGTH_LONG).show();
+            Toast.makeText(CallScreenActivity.this, "Call Time: " + Establishedtime, Toast.LENGTH_LONG).show();
 
             endCall();
         }
@@ -235,6 +246,8 @@ public class CallScreenActivity extends BaseActivity {
             Log.d(TAG, "Call established");
             mAudioPlayer.stopProgressTone();
             mCallState.setText(call.getState().toString());
+
+            //allow user to change volume during call
             setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
             AudioController audioController = getSinchServiceInterface().getAudioController();
             audioController.enableSpeaker();

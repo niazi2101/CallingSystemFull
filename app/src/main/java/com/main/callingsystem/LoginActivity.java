@@ -50,7 +50,17 @@ public class LoginActivity extends BaseActivity implements SinchService.StartFai
 
     @Override
     public void onStartFailed(SinchError error) {
-        Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show();
+        String errMsgType = error.toString().substring(21,28);
+
+        switch (errMsgType)
+        {
+            case "NETWORK": Toast.makeText(this, "You are not connected to Internet.", Toast.LENGTH_SHORT).show();
+
+                break;
+        }
+
+
+        //Toast.makeText(this, error.toString().substring(21,28), Toast.LENGTH_SHORT).show();
         if (mSpinner != null) {
             mSpinner.dismiss();
         }

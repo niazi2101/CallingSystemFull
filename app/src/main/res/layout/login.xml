@@ -42,10 +42,11 @@
     <Button
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
+        android:text="LOGIN"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/button_login"
+        android:background="@color/bgBackGround"
         android:minHeight="56dp"
         android:minWidth="132dp"
         android:textColor="@color/off_white"
