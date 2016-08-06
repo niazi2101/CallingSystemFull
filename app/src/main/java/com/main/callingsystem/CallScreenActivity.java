@@ -1,5 +1,6 @@
 package com.main.callingsystem;
 
+import com.main.callingsystem.database.DBhandler;
 import com.sinch.android.rtc.AudioController;
 import com.sinch.android.rtc.PushPair;
 import com.sinch.android.rtc.calling.Call;
@@ -8,6 +9,8 @@ import com.sinch.android.rtc.calling.CallState;
 import com.sinch.android.rtc.video.VideoCallListener;
 import com.sinch.android.rtc.video.VideoController;
 
+import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,12 +22,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class CallScreenActivity extends BaseActivity {
+
+    DBhandler handler;
+    Context context = this;
 
     static final String TAG = CallScreenActivity.class.getSimpleName();
     static final String CALL_START_TIME = "callStartTime";
@@ -89,6 +100,8 @@ public class CallScreenActivity extends BaseActivity {
         if (savedInstanceState == null) {
             mCallStart = System.currentTimeMillis();
         }
+
+        handler = new DBhandler(context);
     }
 
     @Override
@@ -100,9 +113,9 @@ public class CallScreenActivity extends BaseActivity {
                 mAddedListener = true;
 
                 //Creating and starting timer
-                mTimer = new Timer();
+          /*      mTimer = new Timer();
                 mDurationTask = new UpdateCallDurationTask();
-
+            */
             }
         } else {
             Log.e(TAG, "Started with invalid callId, aborting.");
@@ -131,6 +144,7 @@ public class CallScreenActivity extends BaseActivity {
     public void onStop() {
         super.onStop();
         mDurationTask.cancel();
+
         mTimer.cancel();
         removeVideoViews();
     }
@@ -145,6 +159,10 @@ public class CallScreenActivity extends BaseActivity {
         mDurationTask = new UpdateCallDurationTask();
         mTimer.schedule(mDurationTask, 0, 500);
         */
+        mTimer = new Timer();
+
+        mDurationTask = new UpdateCallDurationTask();
+
         updateUI();
     }
 
@@ -168,6 +186,18 @@ public class CallScreenActivity extends BaseActivity {
         long minutes = totalSeconds / 60;
         long seconds = totalSeconds % 60;
         return String.format(Locale.US, "%02d:%02d", minutes, seconds);
+    }
+
+
+
+    //This method is used to convert callStart time in readable form
+    private String TimeConversion(long unixSeconds)
+    {
+        Date date = new Date(unixSeconds*1000L); // *1000 is to convert seconds to milliseconds
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); // the format of your date
+        //sdf.setTimeZone(TimeZone.getTimeZone("GMT-4")); // give a timezone reference for formating (see comment at the bottom
+        String formattedDate = sdf.format(date);
+        return formattedDate;
     }
 
     private void updateCallDuration() {
@@ -225,18 +255,33 @@ public class CallScreenActivity extends BaseActivity {
 
             //change volume control to default
             setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
-            String endMsg = "Call ended: " + call.getDetails().toString();
-            /*
-            String Establishedtime = formatTimespan(call.getDetails()
-                    .getEstablishedTime());
-            */
-            String Establishedtime = formatTimespan(System.currentTimeMillis() - mCallStart);
 
+            String Establishedtime = ""+formatTimespan(System.currentTimeMillis() - mCallStart);
 
+            String startTime = ""+ TimeConversion(call.getDetails().getStartedTime());
+            String remoteID = ""+call.getRemoteUserId();
+            String endCause = ""+call.getDetails().getEndCause();
 
-            String msg = "Call End Time:"+call.getDetails().getEndedTime();
-            //Toast.makeText(CallScreenActivity.this, endMsg, Toast.LENGTH_LONG).show();
-            Toast.makeText(CallScreenActivity.this, "Call Time: " + Establishedtime, Toast.LENGTH_LONG).show();
+            String msg = "Call Start Time:" + startTime
+                    + "\n Duration: " + Establishedtime
+                     + "\n Remote ID:" + remoteID
+                    + "\n End Cause:" + endCause;
+            try {
+                if (call != null) {
+                    Intent intent = new Intent(getApplicationContext(), CallDetail.class);
+
+                    intent.putExtra("MSG", msg);
+                    startActivity(intent);
+
+                    //inserting into callLog
+                    handler.insertCallLog(handler, remoteID, startTime, Establishedtime, endCause);
+
+                }
+            }catch (Exception e)
+            {
+                Log.e("SQL","Error inserting data into database" + e.getMessage().toString());
+            }
+            Toast.makeText(CallScreenActivity.this, msg, Toast.LENGTH_LONG).show();
 
             endCall();
         }
@@ -244,6 +289,12 @@ public class CallScreenActivity extends BaseActivity {
         @Override
         public void onCallEstablished(Call call) {
             Log.d(TAG, "Call established");
+
+            //start timer
+            //mTimer = new Timer();
+            //mDurationTask = new UpdateCallDurationTask();
+            mDurationTask.run();
+
             mAudioPlayer.stopProgressTone();
             mCallState.setText(call.getState().toString());
 
@@ -255,6 +306,7 @@ public class CallScreenActivity extends BaseActivity {
             Log.d(TAG, "Call offered video: " + call.getDetails().isVideoOffered());
 
             mTimer.schedule(mDurationTask, 0, 500);
+
 
 
         }
