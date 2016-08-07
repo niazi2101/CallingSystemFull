@@ -44,8 +44,15 @@ public class IncomingCallScreenActivity extends BaseActivity {
         if (call != null) {
             call.addCallListener(new SinchCallListener());
             TextView remoteUser = (TextView) findViewById(R.id.remoteUser);
-            remoteUser.setText(call.getRemoteUserId());
 
+            if(call.getDetails().isVideoOffered())
+            {
+                remoteUser.setText("Video Call: "+call.getRemoteUserId());
+
+            }else {
+
+                remoteUser.setText("Audio Call: " +call.getRemoteUserId());
+            }
         } else {
             Log.e(TAG, "Started with invalid callId, aborting");
             finish();
@@ -57,8 +64,6 @@ public class IncomingCallScreenActivity extends BaseActivity {
         mAudioPlayer.stopRingtone();
         Call call = getSinchServiceInterface().getCall(mCallId);
         if (call != null) {
-            //Allowing user to change volume during call
-            //setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
 
             //
             call.answer();

@@ -93,6 +93,22 @@
             android:textAllCaps="true"
             android:text="Stop service" android:layout_centerHorizontal="true"/>
 
+        <Button
+            android:id="@+id/buttonCallLog"
+            android:text="Call Logs"
+            android:textSize="@dimen/button_text_size"
+            android:textColor="@color/bgForeGround"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/bgAudioColor"
+            android:minHeight="56dp"
+            android:minWidth="132dp"
+            android:layout_alignTop="@+id/callButton"
+            android:layout_toRightOf="@+id/callButton"
+            android:layout_toEndOf="@+id/callButton"
+            android:onClick="onCallLogClick"/>
+
     </RelativeLayout>
 
     <Button

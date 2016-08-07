@@ -15,6 +15,7 @@ public class PlaceCallActivity extends BaseActivity {
 
     private Button mCallButton;
     private Button videoCallButton;
+    private Button callLogButton;
     private EditText mCallName;
 
     @Override
@@ -25,6 +26,7 @@ public class PlaceCallActivity extends BaseActivity {
         mCallName = (EditText) findViewById(R.id.callName);
         mCallButton = (Button) findViewById(R.id.callButton);
         videoCallButton = (Button) findViewById(R.id.buttonVideoCall);
+        callLogButton = (Button) findViewById(R.id.buttonCallLog);
 
 
         mCallButton.setEnabled(false);
@@ -110,4 +112,10 @@ public class PlaceCallActivity extends BaseActivity {
             }
         }
     };
+
+    public void onCallLogClick(View view) {
+
+        Intent intent = new Intent(getApplicationContext(),CallLogActivity.class);
+        startActivity(intent);
+    }
 }

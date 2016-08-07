@@ -1,10 +1,18 @@
 package com.main.callingsystem;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.main.callingsystem.database.DBhandler;
 
@@ -18,7 +26,11 @@ public class CallLogActivity extends Activity {
     String data;
 
     String remoteID, dateTime, duration, endCause;
-    Cursor rs;
+    Cursor cursor;
+
+    TodoCursorAdaptor todoAdaptor;
+    Context context = this;
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,56 +38,53 @@ public class CallLogActivity extends Activity {
         setContentView(R.layout.activity_call_log);
 
         callID = 1;
-        tv2 = (TextView) findViewById(R.id.textView2);
+        tv2 = (TextView) findViewById(R.id.textViewCallLogs);
 
         handler = new DBhandler(this);
 
-        data = "\n ";
-      /*
         try {
+            handler = new DBhandler(this);
+
+            cursor = handler.getAllCallLogs();
+            Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
+            listView = (ListView) findViewById(R.id.listView);
+
+            todoAdaptor = new TodoCursorAdaptor(context, cursor, 0);
+            listView.setAdapter(todoAdaptor);
 
 
-            if (callID > 0) {
-                Cursor rs = handler.getCallLog(callID);
 
-                rs.moveToFirst();
-                remoteID = rs.getString(rs.getColumnIndex(handler.CALLOG_COLUMN_CALLEE_NAME));
-                dateTime = rs.getString(rs.getColumnIndex(handler.CALLOG_COLUMN_DATETIME));
-                duration = rs.getString(rs.getColumnIndex(handler.CALLOG_COLUMN_DURATION));
-                endCause = rs.getString(rs.getColumnIndex(handler.CALLOG_COLUMN_ENDCAUSE));
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-                if (!rs.isClosed()) {
-                    rs.close();
+                @Override
+                public void onItemClick(AdapterView listView, View view,
+                                        int position, long id) {
+                    Cursor itemCursor = (Cursor) CallLogActivity.this.listView.getItemAtPosition(position);
+                    //int studentID = itemCursor.getInt(itemCursor.getColumnIndex(DBhandler.STUDENT_COLUMN_ID));
+
+
+
+                    //Toast.makeText(getApplicationContext(),"Roll Num clicked: " + studentID,Toast.LENGTH_SHORT).show();
+                    /*Intent intent = new Intent(getApplicationContext(), ShowDetail.class);
+                    intent.putExtra(KEY_EXTRA_CONTACT_ID, studentID);
+                    startActivity(intent);
+*/
                 }
-
-                try {
-                    while (rs.moveToNext()) {
-                        remoteID = rs.getString(rs.getColumnIndex(handler.CALLOG_COLUMN_CALLEE_NAME));
-                        dateTime = rs.getString(rs.getColumnIndex(handler.CALLOG_COLUMN_DATETIME));
-                        duration = rs.getString(rs.getColumnIndex(handler.CALLOG_COLUMN_DURATION));
-                        endCause = rs.getString(rs.getColumnIndex(handler.CALLOG_COLUMN_ENDCAUSE));
-
-                    }
-                } finally {
-                    cursor.close();
-                }
-
-                data = remoteID + "\n Time: " + dateTime + "\n Duration: " + "\n End Cause:" + endCause;
-
-                tv2.setText(data);
-
-            }
-        } catch (Exception e) {
-            Log.e("SQL", "ERROR INSERTING DATA: " + e.getMessage().toString());
+            });
+        }catch(Exception e)
+        {
+            Log.e("ERROR","UNABLE TO DISPLAY STUDENT LIST: "+e);
+            Log.e("ERROR","UNABLE TO DISPLAY STUDENT LIST: "+cursor.getColumnNames().toString());
         }
-    */
 
-        //Cursor rs = handler.getCallLog(callID);
 
+/*
         try
     {
+        handler = new DBhandler(this);
+
         rs = handler.getAllCallLogs();
-        rs.moveToFirst();
+        //rs.moveToFirst();
 
 
         if (rs.moveToFirst()) {
@@ -86,7 +95,7 @@ public class CallLogActivity extends Activity {
                 duration = rs.getString(rs.getColumnIndex(handler.CALLOG_COLUMN_DURATION));
                 endCause = rs.getString(rs.getColumnIndex(handler.CALLOG_COLUMN_ENDCAUSE));
 
-                data = remoteID + "\n Time: " + dateTime + "\n Duration: " +duration
+                data += "\n " + remoteID + "\n Time: " + dateTime + "\n Duration: " +duration
                 +"\n End Cause:" + endCause;
 
 
@@ -103,5 +112,9 @@ public class CallLogActivity extends Activity {
     }
 
         tv2.setText(data);
+        */
+
+
+
 }
 }

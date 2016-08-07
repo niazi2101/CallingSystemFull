@@ -262,10 +262,13 @@ public class CallScreenActivity extends BaseActivity {
             String remoteID = ""+call.getRemoteUserId();
             String endCause = ""+call.getDetails().getEndCause();
 
+            boolean isVideoOffered = call.getDetails().isVideoOffered();
+
             String msg = "Call Start Time:" + startTime
                     + "\n Duration: " + Establishedtime
                      + "\n Remote ID:" + remoteID
-                    + "\n End Cause:" + endCause;
+                    + "\n End Cause:" + endCause
+                    + "\n Video:" + isVideoOffered;
             try {
                 if (call != null) {
                     Intent intent = new Intent(getApplicationContext(), CallDetail.class);
